@@ -64,18 +64,23 @@ class Game:
             elif direction == 'a':
                 self._move_left()
             elif direction == 's':
-                self.board.transpose().flip_board()
+                self.board.transpose()
+                self.board.flip_board()
                 self._move_left()
-                self.board.transpose().flip_board()
+                self.board.flip_board()
+                self.board.transpose()
             elif direction == 'd':
                 self.board.flip_board()
                 self._move_left()
                 self.board.flip_board()
             if not self._set_random_cell():
-                self._end = True 
                 self._game_end_with_failure()
             self.print_board()
             
+            # [1, 2, 3] [1, 4, 7]
+            # [4, 5, 6] [2, 5, 8]
+            # [7, 8, 9] [3, 6, 9]
+
     def print_board(self):
         print(self.board.to_string())
     
@@ -101,6 +106,8 @@ class Game:
                 and self.board.get_cell(row_num, col_num + 1) == curr_cell:
                 self.board.set_cell(row_num, col_num, curr_cell * 2)
                 self.board.set_cell(row_num, col_num + 1, None)
+                if curr_cell * 2 == 2048:
+                    self._game_end_with_success()
     
     def _move_left(self):
         for row_num in range(Board.BOARD_SIZE):
@@ -122,9 +129,11 @@ class Game:
         return direction
     
     def _game_end_with_success(self):
+        self._end = True
         pass
 
     def _game_end_with_failure(self):
+        self._end = True
         pass
     
 
