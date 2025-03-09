@@ -45,11 +45,15 @@ class Game:
     DEFAULT_VAL = 2
     ALLOWED_DIRECTIONS = {'w', 'a', 's', 'd'}
     def __init__(self):
+        pass
+    
+    def _init_game(self):
         self.board = Board()
         self._set_up_board()
-        self._end = False
+        self._end = None
 
     def start(self):
+        self._init_game()
         print(
             f'\n\nWelcome to Doris\' 2048 Game!!! Your initial board is: \n'
         )
@@ -81,6 +85,11 @@ class Game:
             # [4, 5, 6] [2, 5, 8]
             # [7, 8, 9] [3, 6, 9]
 
+        if self._end == 'failed':
+            self._after_game_end("You failed.")
+        elif self._end == 'success':
+            self._after_game_end("Congrats, you win!")
+
     def print_board(self):
         print(self.board.to_string())
     
@@ -108,6 +117,7 @@ class Game:
                 self.board.set_cell(row_num, col_num + 1, None)
                 if curr_cell * 2 == 2048:
                     self._game_end_with_success()
+
     
     def _move_left(self):
         for row_num in range(Board.BOARD_SIZE):
@@ -129,12 +139,17 @@ class Game:
         return direction
     
     def _game_end_with_success(self):
-        self._end = True
-        pass
+        self._end = 'success'
 
     def _game_end_with_failure(self):
-        self._end = True
-        pass
-    
+        self._end = 'failed'
+
+    def _after_game_end(self, prompt):
+        decision = input(prompt + ' Do you wish to play another round, enter yes or no: \n')
+
+        if decision.strip() == 'yes':
+            self.start()
+        else:
+            print('Game ended. Thanks \n')
 
 
